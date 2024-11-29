@@ -1,9 +1,11 @@
 package com.example.gradualalarm;
 
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -27,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     //class used to manage the alarm
     AlarmManager manager;
 
+    String[] perms = new String[] {Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,19 +41,26 @@ public class MainActivity extends AppCompatActivity {
 
         //AlarmManager instantiation
         manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        //TODO: fix this its not requesting pemrissions
+        if(!manager.canScheduleExactAlarms()){
+            requestPermissions(perms,2);
+        }
+
     }
 
     //Toggle alarm on/off
     public void OnToggleClicked(View view) {
         long time;
         //check if the toggle button is switched on
+
         if (((ToggleButton) view).isChecked()){
 
             //alarm on message displayed using Toast
             Toast.makeText(MainActivity.this, "ALARM ON", Toast.LENGTH_SHORT).show();
             Calendar calendar = Calendar.getInstance();
 
-            //get current time from the TimePicker
+            //get calendar time from the TimePicker
             calendar.set(Calendar.HOUR_OF_DAY, alarmTimePicker.getHour());
             calendar.set(Calendar.MINUTE, alarmTimePicker.getMinute());
 
@@ -59,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             //call the broadcast using pendingIntent
             pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
-            //formula to round current time to the closest minute
+            //formula to round current time to the exact minute
             time = (calendar.getTimeInMillis() - (calendar.getTimeInMillis() % 60000));
 
             //set the current time to AM or PM
@@ -71,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
             }
             Toast.makeText(MainActivity.this, ("Time set to " + time), Toast.LENGTH_LONG).show();
             // Alarm rings continuously until toggle button is turned off
-            manager.setRepeating(AlarmManager.RTC_WAKEUP, time, 10000, pendingIntent);
 
+            manager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, time, pendingIntent);
         }
         //turn alarm off otherwise
         else {

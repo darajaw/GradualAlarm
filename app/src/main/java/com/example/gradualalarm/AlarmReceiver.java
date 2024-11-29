@@ -14,8 +14,6 @@ import android.net.Uri;
 import androidx.annotation.RequiresApi;
 
 public class AlarmReceiver extends BroadcastReceiver {
-    //set minimumSDK
-    @RequiresApi(api = Build.VERSION_CODES.Q)
 
     @Override
     public void onReceive(Context context, Intent intent) {
