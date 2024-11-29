@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AlarmReceiver.class);
 
             //call the broadcast using pendingIntent
-            pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+            pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
             //formula to round current time to the closest minute
             time = (calendar.getTimeInMillis() - (calendar.getTimeInMillis() % 60000));
@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 else
                     time = time + (1000 * 60 * 60 * 24);
             }
+            Toast.makeText(MainActivity.this, ("Time set to " + time), Toast.LENGTH_LONG).show();
             // Alarm rings continuously until toggle button is turned off
             manager.setRepeating(AlarmManager.RTC_WAKEUP, time, 10000, pendingIntent);
 
