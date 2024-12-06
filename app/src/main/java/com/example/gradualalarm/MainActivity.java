@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO: fix this its not requesting pemrissions
         if(!manager.canScheduleExactAlarms()){
             requestPermissions(perms,2);
+
         }
 
     }
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
             //call the broadcast using pendingIntent
             pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
-            //formula to round current time to the exact minute
+            //formula to round wake-up time to the exact minute
             time = (calendar.getTimeInMillis() - (calendar.getTimeInMillis() % 60000));
 
             //set the current time to AM or PM
@@ -81,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
                     time = time + (1000 * 60 * 60 * 24);
             }
             Toast.makeText(MainActivity.this, ("Time set to " + time), Toast.LENGTH_LONG).show();
-            // Alarm rings continuously until toggle button is turned off
 
-            manager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, time, pendingIntent);
+            // Alarm rings continuously until toggle button is turned off
+            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent);
         }
         //turn alarm off otherwise
         else {
