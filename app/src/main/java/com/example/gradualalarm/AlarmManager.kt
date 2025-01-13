@@ -14,7 +14,7 @@ class AlarmManager(
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     //Todo: update function to have time passed to it
-    fun scheduleAlarm(){
+    fun scheduleAlarm(setTime: Long){
 
         // example time for test
         val fiveSecs = 1000 * 5
@@ -28,18 +28,17 @@ class AlarmManager(
         // at the exact time and run even in low power mode
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP, // RTC_WAKEUP used for exact time
-            //todo: change the triggerAtMillis to get specific time from user
-            SystemClock.elapsedRealtime() + fiveSecs, //current time plus the alarm time thats set
+            setTime, //current time plus the alarm time thats set
             pendingIntent
         )
 
+        /*
         //repeating alarm example
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP, // RTC_WAKEUP used for exact time
-            //todo: change the triggerAtMillis to get specific time from user
             SystemClock.elapsedRealtime() + fiveSecs, //current time plus the alarm time thats set
             1000 * 60,
-            pendingIntent)
+            pendingIntent)*/
     }
 
     fun cancelAlarm(){

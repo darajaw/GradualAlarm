@@ -38,39 +38,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// Creating a composable
-// function to display Top Bar
+// Creating a composable function to display Top Bar
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContent() {
     Scaffold(
         topBar = { TopAppBar(title = { Text("GFG | Time Picker", color = Color.Black) })},
-        content = { MyContent() }
+        content = { AlarmContent() }
     )
-}
-
-@Composable
-//default null the alarmmanager so it can be previewed
-fun AlarmContent(alarmManager: AlarmManager? = null){
-    Column (
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment =  Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ){
-        Button(onClick = {
-            alarmManager?.scheduleAlarm()
-        }) {
-            Text(text = "Set Alarm")
-        }
-
-        Spacer(modifier = Modifier.height(30.dp))
-        Button(onClick = {
-            alarmManager?.cancelAlarm()
-        }) {
-            Text(text = "Cancel Alarm")
-        }
-    }
 }
 
 // Creating a composable function
@@ -78,41 +54,60 @@ fun AlarmContent(alarmManager: AlarmManager? = null){
 // Calling this function as content
 // in the above function
 @Composable
-fun MyContent(){
+//default null the alarmManager so it can be previewed
+fun AlarmContent(alarmManager: AlarmManager? = null){
 
     // Fetching local context
-    val mContext = LocalContext.current
+    val loContext = LocalContext.current
 
     // Declaring and initializing a calendar
-    val mCalendar = Calendar.getInstance()
-    val mHour = mCalendar[Calendar.HOUR_OF_DAY]
-    val mMinute = mCalendar[Calendar.MINUTE]
+    val curCalendar = Calendar.getInstance()
+    val curHour = curCalendar[Calendar.HOUR_OF_DAY]
+    val curMinute = curCalendar[Calendar.MINUTE]
 
     // Value for storing time as a string
-    val mTime = remember { mutableStateOf("") }
+    val setTime = remember { mutableStateOf("") }
+
+    val setCalendar = Calendar.getInstance()
 
     // Creating a TimePicker dialog
-    val mTimePickerDialog = TimePickerDialog(
-        mContext,
-        {_, mHour : Int, mMinute: Int ->
-            mTime.value = "$mHour:$mMinute"
-            //Todo: Insert function to set alarm time here
-        }, mHour, mMinute, false
+    val timePickerDialog = TimePickerDialog(
+        loContext,
+        {_, setHour : Int, setMinute: Int ->
+            setTime.value = "$setHour:$setMinute"
+            setCalendar.set(Calendar.HOUR_OF_DAY, setHour)
+            setCalendar.set(Calendar.MINUTE, setMinute)
+            alarmManager?.scheduleAlarm(setCalendar.timeInMillis)
+        }, curHour, curMinute, false
     )
 
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+    //Physical build for the app
+    Column (
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment =  Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        Text(text = "Selected Time: ${setTime.value}", fontSize = 30.sp)
+
+        Spacer(modifier = Modifier.height(30.dp))
 
         // On button click, TimePicker is
         // displayed, user can select a time
-        Button(onClick = { mTimePickerDialog.show() }, colors = ButtonDefaults.buttonColors(Color(0XFF0F9D58))) {
-            Text(text = "Open Time Picker", color = Color.White)
+        Button(onClick = {
+            timePickerDialog.show()
+        }) {
+            Text(text = "Set Alarm")
         }
 
-        // Add a spacer of 100dp
-        Spacer(modifier = Modifier.size(100.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
-        // Display selected time
-        Text(text = "Selected Time: ${mTime.value}", fontSize = 30.sp)
+        // On button click, alarm is canceled and setTime is removed
+        Button(onClick = {
+            alarmManager?.cancelAlarm()
+            setTime.value = ""
+        }) {
+            Text(text = "Cancel Alarm")
+        }
     }
 }
 
