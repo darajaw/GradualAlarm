@@ -11,6 +11,9 @@
     <!--Permission to be aware when the app is closed so the alarm is still scheduled-->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
+    <!-- Permission to vibrate the phone -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

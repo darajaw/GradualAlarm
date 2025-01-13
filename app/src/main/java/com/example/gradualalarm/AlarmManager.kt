@@ -16,9 +16,6 @@ class AlarmManager(
     //Todo: update function to have time passed to it
     fun scheduleAlarm(setTime: Long){
 
-        // example time for test
-        val fiveSecs = 1000 * 5
-
         val pendingIntent = PendingIntent.getBroadcast(
             context, 1, Intent(context, AlarmReceiver::class.java),
             PendingIntent.FLAG_IMMUTABLE // Immutable keeps pending intents from over writing each other even with the same request code

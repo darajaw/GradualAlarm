@@ -1,4 +1,4 @@
-package com.geeksforgeeks.jctimepicker
+package com.example.gradualalarm
 
 import android.annotation.SuppressLint
 import android.app.TimePickerDialog
@@ -6,9 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -23,7 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.gradualalarm.AlarmManager
 import java.util.*
 
 class MainActivity : ComponentActivity() {
@@ -68,13 +65,19 @@ fun AlarmContent(alarmManager: AlarmManager? = null){
     // Value for storing time as a string
     val setTime = remember { mutableStateOf("") }
 
-    val setCalendar = Calendar.getInstance()
-
     // Creating a TimePicker dialog
     val timePickerDialog = TimePickerDialog(
         loContext,
         {_, setHour : Int, setMinute: Int ->
             setTime.value = "$setHour:$setMinute"
+
+            //calendar instance to store the exact alarm time
+            val setCalendar = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, setHour)
+                set(Calendar.MINUTE, setMinute)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
             setCalendar.set(Calendar.HOUR_OF_DAY, setHour)
             setCalendar.set(Calendar.MINUTE, setMinute)
             alarmManager?.scheduleAlarm(setCalendar.timeInMillis)
