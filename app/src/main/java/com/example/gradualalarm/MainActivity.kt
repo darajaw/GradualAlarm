@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             // Calling the composable function
             // to display element and its contents
-            MainContent()
+            AlarmContent(alarmManager)
         }
     }
 }
@@ -50,26 +50,23 @@ fun MainContent() {
     )
 }
 
-fun setAlarm(){
-
-}
-
 @Composable
-fun AlarmContent(){
+//default null the alarmmanager so it can be previewed
+fun AlarmContent(alarmManager: AlarmManager? = null){
     Column (
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment =  Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
         Button(onClick = {
-            alarmManager.scheduleAlarm()
+            alarmManager?.scheduleAlarm()
         }) {
             Text(text = "Set Alarm")
         }
 
         Spacer(modifier = Modifier.height(30.dp))
         Button(onClick = {
-            alarmManager.cancelAlarm()
+            alarmManager?.cancelAlarm()
         }) {
             Text(text = "Cancel Alarm")
         }
@@ -124,5 +121,5 @@ fun MyContent(){
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    MainContent()
+    AlarmContent()
 }
